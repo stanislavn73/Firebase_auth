@@ -94,10 +94,9 @@ function App() {
   function handleGoogleAuth() {
     let provider = new firebase.auth.GoogleAuthProvider();
     auth().signInWithPopup(provider)
-      .then(result => {
-        return true
+      // .then(result => {
       //   let token = result.credential.accessToken
-      })
+      // })
       .catch((error) => {
         return error.message
       })
