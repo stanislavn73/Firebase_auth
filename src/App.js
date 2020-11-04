@@ -97,6 +97,7 @@ function App() {
       // .then(result => {
       //   let token = result.credential.accessToken
       // })
+      return true
       .catch((error) => {
         return error.message
       })
