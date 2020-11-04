@@ -9,7 +9,6 @@ import TodosComponent from './components/Todos/TodosComponent'
 import firebase from './ConfigFirebase'
 import Home from './components/AuthPage/Home';
 
-
 function App() {
   const [formName, setFormName] = useState('')
   const [serverResponse, setServerResponse] = useState('')
@@ -19,7 +18,6 @@ function App() {
   const [receivedData, setReceivedData] = useState([])
   const { auth, firestore } = firebase
   const LOCAL_STORAGE_KEY = 'userSignInData'
-
 
   useEffect(() => {
     auth().onAuthStateChanged(user => {
@@ -127,16 +125,14 @@ function App() {
   }
 
   return (
-    <Router>
+    // <Router>
       <>
-      {!userLogged &&
         <Header
           setFormName={setFormName}
           userLogged={userLogged}
           handleLogOut={handleLogOut}
         />
-      // <Route exact path='/' component={Home} />
-      }
+       {/* <Route exact path='/' component={Home} /> */}
 
         {formName === 'registering' && !userLogged &&
           <SignUp
@@ -172,7 +168,7 @@ function App() {
           lists={receivedData}
         />}
       </>
-    </Router>
+    // </Router>
   )
 }
 

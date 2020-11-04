@@ -23,8 +23,7 @@ export default function Header({setFormName,userLogged,handleLogOut}) {
         // user!=='pending' && 
         <Button>My Todos</Button>}
         {userLogged &&
-        // user!=='pending'
-        //  &&  
+        // user!=='pending'&&  
         <Button
           color="primary"
           className={classes.button}
