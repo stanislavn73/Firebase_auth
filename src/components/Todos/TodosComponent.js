@@ -1,218 +1,227 @@
-import React, {useState,useEffect} from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import { v4 as uuidv4 } from 'uuid'
+import { todosContext } from '../../App'
+import { useAuth } from '../Auth'
 import Lists from './Lists'
 
-export const listsContext = React.createContext()
+export const todoContext = React.createContext()
 
-function TodosComponent({user, saveData, lists, setNewList}) {
-  
-  // const LOCAL_STORAGE_KEY = 'lists'
-  // const [lists, setNewList] = useState(sampleLists)
-  const listsContextValue = {
-    handleSetNewList,
-    handleDeleteList,
-    setHeadLabel,
+function TodosComponent() {
+  const { user } = useAuth()
+  const {
+    saveChanges,
+    saveNewTodo,
+    deleteTodo,
+    getDatabaseData
+  } = useContext(todosContext)
+  const [todos, setTodos] = useState([])
+  const TodoContextValue = {
+    handleSetNewTodo,
+    handleDeleteTodo,
+    setTaskName,
     togglingHeadEditing,
     setCompletedClass,
-    setListLabel,
+    setTodoName,
     toggleEditingClass,
     setDeleteTask,
     handleRaiseTask,
     handleDropTask,
     toRepayActiveEditingLi,
   }
-  
-  let newList = {
-    listId:uuidv4(),
-    listName:'Place name of list here...',
-    editingActive:false,
-    listItems:[{
-      liId:uuidv4(),
-      liName:'Place name of Task here...',
-      editingActive:false,
-      checkbox:false
-    }]  
+
+  let newTodo = {
+    todoId: uuidv4(),
+    todoName: 'Place name of todo here...',
+    editingActive: false,
+    tasks: [{
+      taskId: uuidv4(),
+      taskName: 'Place name of Task here...',
+      editingActive: false,
+      checkbox: false
+    }]
   }
 
   useEffect(() => {
-    // if(!lists) lists=sampleLists
-    // let localStorageItem = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY))||[]
-    // setNewList(localStorageItem)
-  }, [])
+    getDatabaseData(user)
+      .then(response => setTodos(response))
+      .catch(() => setTodos([]))
+    console.log(todos)
+  }, [user])
 
-  useEffect(() => {
-    // localStorage.setItem(LOCAL_STORAGE_KEY,JSON.stringify(lists))
-
-  }, [lists])
-  
-  function handleSetNewList(value, id){
-    let newTask={
-      liId:uuidv4(),
-      liName:value
+  function handleSetNewTodo(value, id) {
+    let newTask = {
+      taskId: uuidv4(),
+      taskName: value,
+      editingActive: false,
+      checkbox: false
     }
-    let indexOfList = lists.findIndex(item => item.listId===id)
-    let newLists = [...lists]
-    newLists[indexOfList].listItems.push(newTask)
-    saveData(newLists)
+    let indexOfTodo = todos.findIndex(todo => todo.todoId === id)
+    let copyOfTodos = [...todos]
+    let foundedTodo = copyOfTodos[indexOfTodo]
+    foundedTodo.tasks.push(newTask)
+    saveChanges(foundedTodo, user)
+    setTodos(copyOfTodos)
   }
 
-  function handleDeleteList(id){
-    let indexOfList = lists.findIndex(item => item.listId===id)
-    let newLists = [...lists]
-    newLists.splice(indexOfList,1)
-    saveData([...newLists])
+  function handleDeleteTodo(id) {
+    let indexOfTodo = todos.findIndex(todo => todo.todoId === id)
+    let copyOfTodos = [...todos]
+    copyOfTodos.splice(indexOfTodo, 1)
+    setTodos(copyOfTodos)
+    deleteTodo(todos[indexOfTodo], user)
   }
 
-  function setHeadLabel(value,id){
-    let indexOfList = lists.findIndex(item => item.listId===id)
-    let newLists = [...lists]
-    newLists[indexOfList].listName=value
-    saveData(newLists)
+  function setTodoName(name, id) {
+    let indexOfTodo = todos.findIndex(todo => todo.todoId === id)
+    let copyOfTodos = [...todos]
+    copyOfTodos[indexOfTodo].todoName = name
+    setTodos(copyOfTodos)
+    saveChanges(copyOfTodos[indexOfTodo], user)
   }
 
-  function togglingHeadEditing(editing,id){
-    editing?editing=false:editing=true
-    let indexOfList = lists.findIndex(item => item.listId===id)
-    let newLists = [...lists]
-    newLists[indexOfList].editingActive=editing
+  function togglingHeadEditing(editing, id) {
+    editing ? editing = false : editing = true
+    let indexOfTodo = todos.findIndex(todo => todo.todoId === id)
+    let copyOfTodos = [...todos]
+    console.log(copyOfTodos, indexOfTodo)
+    copyOfTodos[indexOfTodo].editingActive = editing
+    setTodos(copyOfTodos)
+    saveChanges(copyOfTodos[indexOfTodo], user)//need send todo object not todos
   }
 
-  function setCompletedClass(checked,id){
-    let newLists = lists.map(list => {
-      let index=list.listItems.findIndex(li=>li.liId===id)
-        if(index>-1){
-          list.listItems[index].checkbox=checked
-          return list
-        }else{return list}
-      })
-      saveData(newLists)
-  }
-
-  function toggleEditingClass(id,editingActive){
-    if (editingActive){editingActive=false}
-    else{editingActive=true}
-    let newLists = lists.map(list => {
-      let index=list.listItems.findIndex(li=>li.liId===id)
-        if(index>-1){
-          list.listItems[index].editingActive=editingActive
-          return list
-        }else{return list}
-    })
-    saveData(newLists)
-  }
-
-  function setListLabel(newName,id){
-    let newLists = lists.map(list => {
-      let index=list.listItems.findIndex(li=>li.liId===id)
-        if(index>-1){
-          list.listItems[index].liName=newName
-          return list
-        }else{return list}
-    })
-    saveData(newLists)
-  }
-
-  function setDeleteTask(id){
-    let newLists = lists.map(list => {
-      let index=list.listItems.findIndex(li=>li.liId===id)
-      if(index>-1){
-        list.listItems.splice(index,1)
-        return list
-      }else{
-        return list
+  function setCompletedClass(checked, id) {
+    let currentTodo = {}
+    let copyOfTodos = todos.map(todo => {
+      let index = todo.tasks.findIndex(task => task.taskId === id)
+      if (index > -1) {
+        currentTodo = todo
+        todo.tasks[index].checkbox = checked
       }
+      return todo
     })
-    saveData(newLists)
+    setTodos(copyOfTodos)
+    saveChanges(currentTodo, user)
   }
 
-  function handleDropTask(id){
-    let newLists = lists.map(list => {
-      let liArray = list.listItems
-      let index=liArray.findIndex(li=>li.liId===id)
-      if(index>-1){
-        if(liArray[index+1]){
-          [liArray[index],liArray[index+1]]=[liArray[index+1],liArray[index]]
-          return list
-        }else{return list}
-      }else{return list}
-    })
-    saveData(newLists)
-  }
-
-  function handleRaiseTask(id){
-    let newLists = lists.map(list => {
-      let liArray = list.listItems
-      let index=liArray.findIndex(li=>li.liId===id)
-      if(index>-1){
-        if(liArray[index-1]){
-          [liArray[index],liArray[index-1]]=[liArray[index-1],liArray[index]]
-          return list
-        }else{return list}
-      }else{
-        return list
+  function toggleEditingClass(id, editingActive) {
+    let currentTodo = {}
+    if (editingActive) { editingActive = false }
+    else { editingActive = true }
+    let copyOfTodos = todos.map((todo) => {
+      let taskIndex = todo.tasks.findIndex(task => task.taskId === id)
+      if (taskIndex > -1) {
+        todo.tasks[taskIndex].editingActive = editingActive
+        currentTodo = todo
       }
+      return todo
     })
-    saveData(newLists)
+    setTodos(copyOfTodos)
+    saveChanges(currentTodo, user)
   }
 
-  function toRepayActiveEditingLi(){
-    let newLists=lists.map(list=>{
-      list.editingActive=false
-      list.listItems.map(li=>{
-        li.editingActive=false
-        return li
-      })
-    return list
+  function setTaskName(newName, id) {
+    let currentTodo = {}
+    let copyOfTodos = todos.map(todo => {
+      let taskIndex = todo.tasks.findIndex(task => task.taskId === id)
+      if (taskIndex > -1) {
+        todo.tasks[taskIndex].taskName = newName
+        currentTodo = todo
+      }
+      return todo
     })
-    saveData(newLists)
+    setTodos(copyOfTodos)
+    saveChanges(currentTodo, user)
+  }
+
+  function setDeleteTask(id) {
+    let currentTodo = {}
+    let copyOfTodos = todos.map(todo => {
+      let taskIndex = todo.tasks.findIndex(task => task.taskId === id)
+      if (taskIndex > -1) {
+        currentTodo = todo
+        todo.tasks.splice(taskIndex, 1)
+      }
+      return todo
+    })
+    setTodos(copyOfTodos)
+    saveChanges(currentTodo, user)
+  }
+
+  function handleDropTask(id) {
+    let currentTodo = {}
+    let copyOfTodos = todos.map(todo => {
+      let tasks = todo.tasks
+      let taskIndex = tasks.findIndex(task => task.taskId === id)
+      if (taskIndex > -1) {
+        if (tasks[taskIndex + 1]) {
+          [tasks[taskIndex], tasks[taskIndex + 1]] = [tasks[taskIndex + 1], tasks[taskIndex]]
+          currentTodo = todo
+        }
+      }
+      return todo
+    })
+    if (Object.keys(currentTodo).length !== 0) {
+      setTodos(copyOfTodos)
+      saveChanges(currentTodo, user)
+    }
+  }
+
+  function handleRaiseTask(id) {
+    let currentTodo = {}
+    let copyOfTodos = todos.map(todo => {
+      let tasks = todo.tasks
+      let taskIndex = tasks.findIndex(task => task.taskId === id)
+      if (taskIndex > -1 && tasks[taskIndex - 1]) {
+        [tasks[taskIndex], tasks[taskIndex - 1]] = [tasks[taskIndex - 1], tasks[taskIndex]]
+        currentTodo = todo
+      }
+      return todo
+    })
+    if (Object.keys(currentTodo).length !== 0) {
+      saveChanges(currentTodo, user)
+      setTodos(copyOfTodos)
+    }
+  }
+
+  function toRepayActiveEditingLi() {
+    todos.map(todo => {
+      todo.editingActive = false
+      todo.tasks.map(task => {
+        task.editingActive = false
+        return task
+      })
+      saveChanges(todo)
+      return todo
+    })
+
+  }
+  function handleAddNewTodo() {
+
+    setTodos([newTodo, ...todos])
+    saveNewTodo(newTodo, user)
   }
 
   return (
 
     <div>
+      {/* {console.log('local data - ', todos)} */}
       <header>
-        <a href="https://google.com" >simple to do list</a>
+        <a href="https://google.com" >simple todo list</a>
         <p>from ruby garage</p>
       </header>
-      <input onClick={()=>setNewList(newList)}
-        type="submit" value="Add TODO List" id="do_form"
+      <input onClick={handleAddNewTodo}
+        type="submit" value="Add TODO" id="do_form"
       />
-      <br/>
+      <br />
       <main id="general">
-        <listsContext.Provider value={listsContextValue}>
-        <Lists lists={lists}/>
-        </listsContext.Provider>
+        <todoContext.Provider value={TodoContextValue}>
+          <Lists todos={todos} />
+        </todoContext.Provider>
       </main>
-      <br/><br/><br/><br/>
+      <br /><br /><br /><br />
       <footer>c Ruby Garage</footer>
     </div>
   )
 }
-
-let sampleLists = [
-  {
-    listId:uuidv4(),
-    listName:'Place name of list here...',
-    editingActive:false,
-    listItems:[{
-      liId:uuidv4(),
-      liName:'to Throw out the trash',
-      editingActive:false,
-      checkbox:false
-    }]
-  }
-  // {  
-  //   listId:uuidv4(),
-  //   listName:'Place name of list here...',
-  //   editingActive:false,
-  //   listItems:[{
-  //     liId:uuidv4(),
-  //     liName:'Finish React App',
-  //     editingActive:false,
-  //     checkbox:false
-  //     }
-  //   ] 
-  // }
-]
 
 export default TodosComponent

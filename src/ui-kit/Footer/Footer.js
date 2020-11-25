@@ -5,11 +5,9 @@ import Link from '@material-ui/core/Link';
 
 export default function Footer() {
   return (
-    // <div>
     <Box mt={5}>
       <Copyright />
     </Box>
-    //  </div> 
   )
 }
 

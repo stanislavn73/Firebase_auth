@@ -11,7 +11,6 @@ var firebaseConfig = {
   measurementId: "G-FS2LBQDXX0"
 };
 firebase.initializeApp(firebaseConfig);
-firebase.analytics();
 
 //update firestore settings
 // firebase.firestore().settings({ timestampsInSnapshots: true })

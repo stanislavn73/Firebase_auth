@@ -1,70 +1,77 @@
 import React, { useState, useContext, useEffect } from 'react'
-import {listsContext} from './TodosComponent'
+import { todoContext } from './TodosComponent'
+import { DebounceInput } from 'react-debounce-input';
 
-export default function Task({liId,liName,editingActive,checkbox}) {
+export default function Task({ taskId, taskName, editingActive, checkbox }) {
     const {
         setCompletedClass,
-        setListLabel,
+        setTaskName,
         toggleEditingClass,
         setDeleteTask,
         handleRaiseTask,
         handleDropTask,
-        toRepayActiveEditingLi} = useContext(listsContext)
+        toRepayActiveEditingLi } = useContext(todoContext)
     const [liClass, toggleLiClass] = useState('li')
     const [buttonClass, toggleButtonClass] = useState('button_edittask')
-    const [currentInputValue, setInputValue] = useState(liName)
+    const [currentInputValue, setInputValue] = useState(taskName)
 
     useEffect(() => {
-        if(editingActive){
+        if (editingActive) {
             toggleLiClass('li editing')
             toggleButtonClass('button_save')
-        }else{
-            if(checkbox){
+
+        } else {
+            if (checkbox) {
                 toggleLiClass('li completed')
             }
-            else{
-                toggleLiClass('li') 
+            else {
+                toggleLiClass('li')
             }
             toggleButtonClass('button_edittask')
-        }
-    }, [editingActive,checkbox]);
 
-    useEffect(()=>{
-        setListLabel(currentInputValue,liId)
-    },[currentInputValue])
-    
-    function handleToggleEditingClass(){
+        }
+    }, [editingActive, checkbox]);
+
+    useEffect(() => {
+        setTaskName(currentInputValue, taskId)
+    }, [currentInputValue])
+
+    function handleToggleEditingClass() {
         toRepayActiveEditingLi()
-        toggleEditingClass(liId,editingActive)
+        toggleEditingClass(taskId, editingActive)
     }
 
     return (
-        <li className={liClass} id={liId}>
+        <li className={liClass} id={taskId}>
             <input type="checkbox" className="task_check"
-                onClick={(e)=>setCompletedClass(e.target.checked,liId)} defaultChecked={checkbox}
+                onClick={(e) => setCompletedClass(e.target.checked, taskId)} defaultChecked={checkbox}
             />
             <label className="task"
                 onClick={handleToggleEditingClass}
-            >{liName}</label>
-            <textarea type="text" className="textfield"
-                onChange={(e)=>setInputValue(e.target.value)} 
-                defaultValue={liName}
-            ></textarea>
+            >{taskName}</label>
+            <DebounceInput
+                element='textarea'
+                minLength={1}
+                debounceTimeout={300}
+                type="text" className="textfield"
+                onChange={(e) => setInputValue(e.target.value)}
+                value={taskName}
+            />
             <div className="editing_block">
                 <div className="up"
-                    onClick={()=>handleRaiseTask(liId)}
+                    onClick={() => handleRaiseTask(taskId)}
                 ></div>
                 <div className="down"
-                    onClick={()=>handleDropTask(liId)}
-                ></div> 
+                    onClick={() => handleDropTask(taskId)}
+                ></div>
             </div>
             <div className="i">|</div>
             <div className={buttonClass}
-            onClick={handleToggleEditingClass}
-            ></div> 
+                onClick={handleToggleEditingClass}
+            ></div>
             <div className="i">|</div>
             <div className="button_deletetask"
-            onClick={()=>setDeleteTask(liId)}
+                onClick={() => setDeleteTask(taskId)}
             ></div>
         </li>
     )

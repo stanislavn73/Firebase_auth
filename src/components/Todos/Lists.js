@@ -1,14 +1,14 @@
 import React from 'react'
-import List from './List'
+import Todo from './Todo'
 
-export default function Lists({lists}) {
+export default function Lists({todos}) {
 
     return (
         <>
-            {lists.map(list=>{
-                return <List
-                key={list.listId}
-                {...list}
+        {console.log(todos)}            {todos.map(todo=>{
+                return <Todo
+                key={todo.todoId}
+                {...todo}
                 /> 
             })}
         </>
