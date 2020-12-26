@@ -45,7 +45,6 @@ function TodosComponent() {
     getDatabaseData(user)
       .then(response => setTodos(response))
       .catch(() => setTodos([]))
-    console.log(todos)
   }, [user])
 
   function handleSetNewTodo(value, id) {
@@ -83,7 +82,6 @@ function TodosComponent() {
     editing ? editing = false : editing = true
     let indexOfTodo = todos.findIndex(todo => todo.todoId === id)
     let copyOfTodos = [...todos]
-    console.log(copyOfTodos, indexOfTodo)
     copyOfTodos[indexOfTodo].editingActive = editing
     setTodos(copyOfTodos)
     saveChanges(copyOfTodos[indexOfTodo], user)//need send todo object not todos
@@ -204,11 +202,10 @@ function TodosComponent() {
   return (
 
     <div>
-      {/* {console.log('local data - ', todos)} */}
-      <header>
+      <div className='banner' >
         <a href="https://google.com" >simple todo list</a>
         <p>from ruby garage</p>
-      </header>
+      </div>
       <input onClick={handleAddNewTodo}
         type="submit" value="Add TODO" id="do_form"
       />
@@ -219,7 +216,7 @@ function TodosComponent() {
         </todoContext.Provider>
       </main>
       <br /><br /><br /><br />
-      <footer>c Ruby Garage</footer>
+      
     </div>
   )
 }

@@ -11,8 +11,6 @@ export function AuthProvider({ children }) {
   const { auth, firestore } = firebase
   const [user, setUser] = useState()
   const [serverResponse, setServerResponse] = useState('')
-  const [loading, setLoading] = useState(true)
-  const LOCAL_STORAGE_KEY = 'userSignInData'
   const contextValue = {
     user,
     handleLoginUser,
@@ -23,15 +21,10 @@ export function AuthProvider({ children }) {
     resetPassword,
     handleGoogleAuth
   }
-
   useEffect(() => {
     const unsubscribe = auth().onAuthStateChanged(user => {
-      // if (user) {
       setUser(user)
-      setLoading(false)
-      let localStorageItem = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY))
-      if (localStorageItem) { handleLoginUser(localStorageItem) }
-
+      setServerResponse('')
     })
     return unsubscribe
   }, [])
@@ -42,25 +35,27 @@ export function AuthProvider({ children }) {
         setUser(user)
         history.push('/user')
         if (rememberMe) {
-          // auth().setPersistence(firebase.auth.Auth.Persistence.NONE)
-          localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify({ password, email }))
+          auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+        } else {
+          auth().setPersistence(firebase.auth.Auth.Persistence.NONE)
         }
-        // setReceivedData([])
         setRememberMe(false)
+        setServerResponse(false)
       })
       .catch((error) => {
         setServerResponse(error.message)
       })
   }
 
-  function handleRegisterUser(values, resetForm) {
+  function handleRegisterUser(values, resetForm, history) {
     auth().createUserWithEmailAndPassword(values.email, values.password)
       .then(cred => {
         return firestore().collection('users').doc(cred.user.uid).set({
           firstName: values.firstName, lastName: values.lastName
         }).then(() => {
+          setUser(cred.user)
+          history.push('/user')
           resetForm()
-          auth().signOut()
         })
       })
       .catch(error => {
@@ -73,19 +68,16 @@ export function AuthProvider({ children }) {
     auth().signInWithPopup(provider)
       .then(result => {
         setUser(result.user)
-        console.log('redirect?')
         history.push('/user')
-        // localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify({ password, result.email }))
       })
       .catch((error) => {
-        return error.message
+        setServerResponse(error.message)
       })
-      
+
   }
 
   function handleLogOut() {
     auth().signOut()
-    localStorage.clear()
     setUser(false)
   }
 
@@ -95,7 +87,7 @@ export function AuthProvider({ children }) {
 
   return (
     <AuthContext.Provider value={contextValue}>
-      {!loading && children}
+      { children}
     </AuthContext.Provider>
   )
 }

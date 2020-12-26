@@ -16,6 +16,7 @@ import HeaderSignedOut from '../../ui-kit/Header/HeaderSingnedOut';
 import { Link } from 'react-router-dom';
 import { useAuth } from "../Auth";
 import FooterLoggedOut from '../../ui-kit/Footer/FooterLoggedOut';
+import Alert from '@material-ui/lab/Alert';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -37,10 +38,9 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function SignIn(props) {
-  const { handleLoginUser } = useAuth()
+export default function SignIn({ history }) {
+  const { handleLoginUser, serverResponse } = useAuth()
   const [rememberMe, setRememberMe] = useState(false)
-  const { serverResponse, history } = props
   const classes = useStyles();
 
 
@@ -61,7 +61,6 @@ export default function SignIn(props) {
               setSubmitting(true)
               handleLoginUser(values, history, rememberMe, setRememberMe)
               setSubmitting(false)
-
             }}
           >
             {
@@ -70,74 +69,74 @@ export default function SignIn(props) {
                 handleChange,
                 handleSubmit
               }) => (
-                  <Form className={classes.form}
+                <Form className={classes.form}
+                >
+                  {serverResponse && <Alert severity="error">{serverResponse}</Alert>}
+                  <TextField
+                    variant="outlined"
+                    margin="normal"
+                    required
+                    fullWidth
+                    id="email"
+                    label="Email Address"
+                    name="email"
+                    autoComplete="email"
+                    autoFocus
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    value={values.email}
+                  />
+                  <TextField
+                    variant="outlined"
+                    margin="normal"
+                    required
+                    fullWidth
+                    name="password"
+                    label="Password"
+                    type="password"
+                    id="password"
+                    autoComplete="current-password"
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    value={values.password}
+                  />
+                  <FormControlLabel
+                    control={<Checkbox value="remember" color="primary"
+                      onChange={(e) => setRememberMe(e.target.checked)}
+                    />}
+                    label="Remember me"
+                  />
+                  <Button
+                    type="submit"
+                    fullWidth
+                    variant="contained"
+                    color="primary"
+                    className={classes.submit}
                   >
-                    <TextField
-                      variant="outlined"
-                      margin="normal"
-                      required
-                      fullWidth
-                      id="email"
-                      label="Email Address"
-                      name="email"
-                      autoComplete="email"
-                      autoFocus
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      value={values.email}
-                    />
-                    <TextField
-                      variant="outlined"
-                      margin="normal"
-                      required
-                      fullWidth
-                      name="password"
-                      label="Password"
-                      type="password"
-                      id="password"
-                      autoComplete="current-password"
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      value={values.password}
-                      helperText={serverResponse}
-                    />
-                    <FormControlLabel
-                      control={<Checkbox value="remember" color="primary"
-                        onChange={(e) => setRememberMe(e.target.checked)}
-                      />}
-                      label="Remember me"
-                    />
-                    <Button
-                      type="submit"
-                      fullWidth
-                      variant="contained"
-                      color="primary"
-                      className={classes.submit}
-                    >
-                      Sign In
+                    Sign In
                   </Button>
-                    <Grid container>
-                      <Grid item xs>
-                        <LinkUi variant="body2"
-                          component={Link} to='/forgot-password'
-                        >
-                          Forgot password?
+                  <Grid container>
+                    <Grid item xs>
+                      <LinkUi variant="body2"
+                        component={Link} to='/forgot-password'
+                      >
+                        Forgot password?
                       </LinkUi>
-                      </Grid>
-                      <Grid item>
-                        <LinkUi variant="body2"
-                          component={Link} to='/signup'
-                        >
-                          Don't have an account? Sign Up
-                      </LinkUi>
-                      </Grid>
                     </Grid>
-                  </Form>
-                )
+                    <Grid item>
+                      <LinkUi variant="body2"
+                        component={Link} to='/signup'
+                      >
+                        Don't have an account? Sign Up
+                      </LinkUi>
+                    </Grid>
+                  </Grid>
+                </Form>
+              )
             }
           </Formik>
         </div>
-        <FooterLoggedOut />
+        <FooterLoggedOut history={history} />
       </Container>
 
     </>

@@ -17,7 +17,6 @@ export default function FooterLoggedOut({history}) {
           <img src='https://www.gstatic.com/mobilesdk/160512_mobilesdk/auth_service_google.svg' />
           <span>Google</span>
         </Button>
-        <Footer />
       </div>
   )
 }

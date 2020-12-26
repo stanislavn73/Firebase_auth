@@ -15,7 +15,7 @@ import HeaderSignedOut from "../../ui-kit/Header/HeaderSingnedOut";
 import { Link } from 'react-router-dom';
 import { useAuth } from '../Auth'
 import FooterLoggedOut from '../../ui-kit/Footer/FooterLoggedOut';
-
+import Alert from '@material-ui/lab/Alert';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -30,7 +30,7 @@ const useStyles = makeStyles((theme) => ({
   },
   form: {
     width: '100%', // Fix IE 11 issue.
-    marginTop: theme.spacing(3),
+    marginTop: theme.spacing(4),
   },
   error_meassage: {
     input: {
@@ -42,7 +42,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function SignUp() {
+export default function SignUp({history}) {
   const { handleRegisterUser, serverResponse } = useAuth()
   const classes = useStyles();
   const validationSchema = Yup.object().shape({
@@ -67,6 +67,7 @@ export default function SignUp() {
           <Typography component="h1" variant="h5">
             Sign up
         </Typography>
+        {serverResponse && <Alert severity="error">{serverResponse}</Alert>}
           <Formik
             initialValues={{
               firstName: '',
@@ -76,115 +77,105 @@ export default function SignUp() {
             }} validationSchema={validationSchema}
             onSubmit={(values, { setSubmitting, resetForm }) => {
               setSubmitting(true)
-              handleRegisterUser(values, resetForm)
+              handleRegisterUser(values, resetForm, history)
               setSubmitting(false)
             }}
           >
             {
               ({ values,
                 errors,
-                touched,
                 handleChange,
                 handleBlur,
-                handleSubmit,
-                isSubmitting
               }) => (
-                  <Form className={classes.form} >
-                    {/* {console.log(serverReponse)} */}
-                    <Grid container spacing={2}>
-                      <Grid item xs={12} sm={6}>
-                        <TextField
-                          autoComplete="fname"
-                          name="firstName"
-                          variant="outlined"
-                          required
-                          fullWidth
-                          id="firstName"
-                          label={errors.firstName || "First Name"}
-                          autoFocus
-                          onBlur={handleBlur}
-                          onChange={handleChange}
-                          value={values.firstName}
-                          error={errors.firstName ? true : false}
-                        />
-                      </Grid>
-                      <Grid item xs={12} sm={6}>
-                        <TextField
-                          variant="outlined"
-                          required
-                          fullWidth
-                          id="lastName"
-                          label={errors.lastName || "Last Name"}
-                          name="lastName"
-                          autoComplete="lname"
-                          onBlur={handleBlur}
-                          onChange={handleChange}
-                          value={values.lastName}
-                          error={errors.lastName ? true : false}
-                        />
-                      </Grid>
-                      <Grid item xs={12}>
-                        <TextField
-                          variant="outlined"
-                          required
-                          fullWidth
-                          id="email"
-                          label={errors.email || "Email Address"}
-                          name="email"
-                          autoComplete="email"
-                          onBlur={handleBlur}
-                          onChange={handleChange}
-                          value={values.email}
-                          error={errors.email ? true : false}
-
-                        />
-                      </Grid>
-                      <Grid item xs={12}>
-                        <TextField
-                          variant="outlined"
-                          required
-                          fullWidth
-                          name="password"
-                          label={errors.password || "Password"}
-                          type="password"
-                          id="password"
-                          autoComplete="current-password"
-                          onBlur={handleBlur}
-                          onChange={handleChange}
-                          value={values.password}
-                          error={errors.password ? true : false}
-                          helperText={serverResponse}
-                        />
-
-                      </Grid>
-                      {/* <Grid item xs={12}>
-                      <FormControlLabel
-                        control={<Checkbox value="allowExtraEmails" color="primary" />}
-                        label="I want to receive inspiration, marketing promotions and updates via email."
+                
+                <Form className={classes.form} >
+                  
+                  <Grid container spacing={2}>
+                    <Grid item xs={12} sm={6}>
+                      <TextField
+                        autoComplete="fname"
+                        name="firstName"
+                        variant="outlined"
+                        required
+                        fullWidth
+                        id="firstName"
+                        label={errors.firstName || "First Name"}
+                        autoFocus
+                        onBlur={handleBlur}
+                        onChange={handleChange}
+                        value={values.firstName}
+                        error={errors.firstName ? true : false}
                       />
-                    </Grid> */}
                     </Grid>
+                    <Grid item xs={12} sm={6}>
+                      <TextField
+                        variant="outlined"
+                        required
+                        fullWidth
+                        id="lastName"
+                        label={errors.lastName || "Last Name"}
+                        name="lastName"
+                        autoComplete="lname"
+                        onBlur={handleBlur}
+                        onChange={handleChange}
+                        value={values.lastName}
+                        error={errors.lastName ? true : false}
+                      />
+                    </Grid>
+                    <Grid item xs={12}>
+                      <TextField
+                        variant="outlined"
+                        required
+                        fullWidth
+                        id="email"
+                        label={errors.email || "Email Address"}
+                        name="email"
+                        autoComplete="email"
+                        onBlur={handleBlur}
+                        onChange={handleChange}
+                        value={values.email}
+                        error={errors.email ? true : false}
 
-                    <Button
-                      type="submit"
-                      fullWidth
-                      variant="contained"
-                      color="primary"
-                      className={classes.submit}
-                    >
-                      Sign Up
-                </Button>
-                    <Grid container justify="flex-end">
-                      <Grid item>
-                        <LinkUi href="#" variant="body2"
-                          component={Link} to='/login'
-                        >
-                          Already have an account? Sign in
-                    </LinkUi>
-                      </Grid>
+                      />
                     </Grid>
-                  </Form>
-                )}
+                    <Grid item xs={12}>
+                      <TextField
+                        variant="outlined"
+                        required
+                        fullWidth
+                        name="password"
+                        label={errors.password || "Password"}
+                        type="password"
+                        id="password"
+                        autoComplete="current-password"
+                        onBlur={handleBlur}
+                        onChange={handleChange}
+                        value={values.password}
+                        error={errors.password ? true : false}
+                      />
+
+                    </Grid>
+                  </Grid>
+                  <Button
+                    type="submit"
+                    fullWidth
+                    variant="contained"
+                    color="primary"
+                    className={classes.submit}
+                  >
+                    Sign Up
+                </Button>
+                  <Grid container justify="flex-end">
+                    <Grid item>
+                      <LinkUi href="#" variant="body2"
+                        component={Link} to='/login'
+                      >
+                        Already have an account? Sign in
+                    </LinkUi>
+                    </Grid>
+                  </Grid>
+                </Form>
+              )}
           </Formik>
         </div>
       </Container>
