@@ -51,7 +51,7 @@ export function AuthProvider({ children }) {
     auth().createUserWithEmailAndPassword(values.email, values.password)
       .then(cred => {
         return firestore().collection('users').doc(cred.user.uid).set({
-          firstName: values.firstName, lastName: values.lastName
+          firstName: values.firstName, lastName: values.lastName, email:values.email
         }).then(() => {
           setUser(cred.user)
           history.push('/todos')

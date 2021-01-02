@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, { useState } from 'react'
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import SignIn from './components/AuthPage/signIn'
 import SignUp from './components/AuthPage/signUp'
@@ -11,7 +11,6 @@ import NotFoundPage from './ui-kit/NotFoundPage';
 import UnloggedRoutes from './components/AuthPage/UnloggedRoutes';
 
 export const todosContext = React.createContext()
-
 function App() {
   const { firestore } = firebase
   const todosContextValue = {
@@ -19,6 +18,7 @@ function App() {
     saveChanges: UpdateFirestoreDocument,
     deleteTodo: deleteTodosDoc,
     getDatabaseData: getFirestoreData,
+    getUserData
   }
 
   async function getFirestoreData(user) {
@@ -30,7 +30,20 @@ function App() {
         })
       })
     }
+    console.log(newFirestoreData)
     return await newFirestoreData
+  }
+
+  async function getUserData(user) {
+    let userData=[]
+    if (user) {
+      await firestore().collection('users').where('email', '==', user.email).get().then(snapshot => {
+        snapshot.docs.forEach(doc => {
+          userData.push(doc.data())
+        })
+      })
+      return userData
+    }
   }
 
   function sendNewList(todo, user) {
@@ -51,11 +64,12 @@ function App() {
     }
   }
 
+
   return (
     <Router>
       <AuthProvider >
         <todosContext.Provider value={todosContextValue}>
-          <PrivateLoggedRoute redirect='/login'/>
+          <PrivateLoggedRoute redirect='/login' />
         </todosContext.Provider>
         <UnloggedRoutes />
       </AuthProvider>
