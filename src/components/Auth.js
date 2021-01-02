@@ -33,7 +33,7 @@ export function AuthProvider({ children }) {
     auth().signInWithEmailAndPassword(email, password)
       .then((user) => {
         setUser(user)
-        history.push('/user')
+        history.push('/profile')
         if (rememberMe) {
           auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
         } else {
@@ -54,7 +54,7 @@ export function AuthProvider({ children }) {
           firstName: values.firstName, lastName: values.lastName
         }).then(() => {
           setUser(cred.user)
-          history.push('/user')
+          history.push('/todos')
           resetForm()
         })
       })
@@ -68,7 +68,7 @@ export function AuthProvider({ children }) {
     auth().signInWithPopup(provider)
       .then(result => {
         setUser(result.user)
-        history.push('/user')
+        history.push('/todos')
       })
       .catch((error) => {
         setServerResponse(error.message)

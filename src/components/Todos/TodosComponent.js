@@ -45,6 +45,7 @@ function TodosComponent() {
     getDatabaseData(user)
       .then(response => setTodos(response))
       .catch(() => setTodos([]))
+    return getDatabaseData
   }, [user])
 
   function handleSetNewTodo(value, id) {
@@ -204,7 +205,7 @@ function TodosComponent() {
     <div>
       <div className='banner' >
         <a href="https://google.com" >simple todo list</a>
-        <p>from ruby garage</p>
+        <p>from stas bazylevych</p>
       </div>
       <input onClick={handleAddNewTodo}
         type="submit" value="Add TODO" id="do_form"
@@ -216,7 +217,7 @@ function TodosComponent() {
         </todoContext.Provider>
       </main>
       <br /><br /><br /><br />
-      
+
     </div>
   )
 }

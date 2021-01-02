@@ -1,23 +1,24 @@
-import React, { useState, useEffect } from 'react'
+import React, {useState} from 'react'
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import SignIn from './components/AuthPage/signIn'
 import SignUp from './components/AuthPage/signUp'
 import firebase from './ConfigFirebase'
-import Home from './components/AuthPage/Home';
+import Home from './components/Home';
 import PrivateLoggedRoute from './components/AuthPage/PrivateLoggedRoute';
 import { AuthProvider } from "./components/Auth";
 import ForgotPassword from './components/AuthPage/ForgotPassword';
+import NotFoundPage from './ui-kit/NotFoundPage';
+import UnloggedRoutes from './components/AuthPage/UnloggedRoutes';
 
 export const todosContext = React.createContext()
 
 function App() {
-
   const { firestore } = firebase
   const todosContextValue = {
     saveNewTodo: sendNewList,
     saveChanges: UpdateFirestoreDocument,
     deleteTodo: deleteTodosDoc,
-    getDatabaseData: getFirestoreData
+    getDatabaseData: getFirestoreData,
   }
 
   async function getFirestoreData(user) {
@@ -54,11 +55,9 @@ function App() {
     <Router>
       <AuthProvider >
         <todosContext.Provider value={todosContextValue}>
-          <PrivateLoggedRoute exact path='/user' redirect='/login' component={Home} />
+          <PrivateLoggedRoute redirect='/login'/>
         </todosContext.Provider>
-        <Route path='/login' component={SignIn} />
-        <Route exact path='/signup' component={SignUp} />
-        <Route path='/forgot-password' component={ForgotPassword} />
+        <UnloggedRoutes />
       </AuthProvider>
     </Router>
   )

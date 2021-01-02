@@ -9,7 +9,7 @@
             align-items: center;
   }
   .head_calendar{
-    background: url(../img/calendar.png) no-repeat;
+    background: url(../imgTodo/calendar.png) no-repeat;
     width: 45px;
     height: 25px; 
     background-position: center;
@@ -26,7 +26,7 @@
   }
   
   .head_edit{
-    background: url(../img/edit.png) no-repeat;
+    background: url(../imgTodo/edit.png) no-repeat;
     width: 45px;
     height: 25px; 
     margin:0 10px 0 10px;
@@ -47,7 +47,7 @@
   }
   .i{visibility: hidden;}
 .head_delete{
-  background: url(../img/delete.png) no-repeat;
+  background: url(../imgTodo/delete.png) no-repeat;
   width: 45px;
   height: 25px;
   margin:0 10px 0 10px;

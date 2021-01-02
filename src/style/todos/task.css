@@ -56,7 +56,7 @@
   }
 
   .down{
-    background: url(../img/down.png) no-repeat;
+    background: url(../imgTodo/down.png) no-repeat;
     width: 45px;
     height: 25px; 
     background-position: center;
@@ -76,7 +76,7 @@
     transition: 1s;
   }
   .up{
-    background: url(../img/up.png) no-repeat;
+    background: url(../imgTodo/up.png) no-repeat;
     width: 45px;
     height: 25px; 
     background-position: center;
@@ -96,7 +96,7 @@
     transition: 1s;
   }
   .button_edittask{
-    background: url(../img/edit.png) no-repeat;
+    background: url(../imgTodo/edit.png) no-repeat;
     width: 45px;
     height: 25px; 
     background-position: center;
@@ -115,7 +115,7 @@
     transition: 1s;
   }
   .button_save{
-    background: url(../img/save.png) no-repeat;
+    background: url(../imgTodo/save.png) no-repeat;
     width: 45px;
     height: 25px; 
     background-position: center;
@@ -132,7 +132,7 @@
     transition: 1s;
   }
   .button_deletetask{
-    background: url(../img/delete.png) no-repeat;
+    background: url(../imgTodo/delete.png) no-repeat;
     width: 45px;
     height: 25px; 
     background-position: center;
