@@ -1,6 +1,5 @@
 import { Button } from '@material-ui/core'
 import React from 'react'
-import Footer from './Footer'
 import { useAuth } from "../../components/Auth";
 
 export default function FooterLoggedOut({history}) {
@@ -14,7 +13,7 @@ export default function FooterLoggedOut({history}) {
         <Button variant="contained"
           onClick={()=>handleGoogleAuth(history)}
         >
-          <img src='https://www.gstatic.com/mobilesdk/160512_mobilesdk/auth_service_google.svg' />
+          <img src='https://www.gstatic.com/mobilesdk/160512_mobilesdk/auth_service_google.svg' alt='' />
           <span>Google</span>
         </Button>
       </div>

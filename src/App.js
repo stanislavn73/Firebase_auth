@@ -1,13 +1,8 @@
-import React, { useState } from 'react'
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import SignIn from './components/AuthPage/signIn'
-import SignUp from './components/AuthPage/signUp'
+import React from 'react'
+import { BrowserRouter as Router} from "react-router-dom";
 import firebase from './ConfigFirebase'
-import Home from './components/Home';
 import PrivateLoggedRoute from './components/AuthPage/PrivateLoggedRoute';
 import { AuthProvider } from "./components/Auth";
-import ForgotPassword from './components/AuthPage/ForgotPassword';
-import NotFoundPage from './ui-kit/NotFoundPage';
 import UnloggedRoutes from './components/AuthPage/UnloggedRoutes';
 
 export const todosContext = React.createContext()
@@ -30,7 +25,6 @@ function App() {
         })
       })
     }
-    console.log(newFirestoreData)
     return await newFirestoreData
   }
 

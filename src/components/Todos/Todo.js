@@ -56,11 +56,11 @@ export default function Todo(props) {
         togglingHeadEditing(editingActive, todoId)
     }
 
-    function setDefaultValue() {
-        if (todoName === 'Place name of list here...') {
-            return ''
-        } else { return todoName }
-    }
+    // function setDefaultValue() {
+    //     if (todoName === 'Place name of list here...') {
+    //         return ''
+    //     } else { return todoName }
+    // }
 
     return (
         <ul className="todo_list" id={todoId}>
